@@ -30,9 +30,9 @@
             body.neon #gameArea {
                 border-color: #00f165;
             }
-            body.neon #Circle {
+            body.neon #circle {
                 background-color: #ff00ff;
-                box-shadow: 0 0 10px #b80ab8,
+                box-shadow: 0 0 10px #b80ab8;
             }
             h1{
                 margin-top: 20px;
@@ -48,7 +48,7 @@
                 overflow: hidden;
                 background: #fff ;
             }
-            #Circle {
+            #circle {
                 position: absolute;
                 width: 50px;
                 height: 50px;
@@ -72,7 +72,7 @@
                 margin-top: 10px;
             }
             @media (max-width: 600px) {
-                #cicle {
+                #circle {
                     width: 40px;
                     height: 40px;
                 }
@@ -84,7 +84,7 @@
         <p class="stats" id="score">score: 0</p>
         <p class="stats" id="highScore">HighScore: 0</p>
         <p class="stats" id="timer">Time Left: 30</p>
-        <p class="stats" id="Level">Level: 1</p>
+        <p class="stats" id="level">level: 1</p>
         <button id="startBtn">Start Game</button>
         <select  id="themeSelect">
             <option value="neon">Neon</option>
@@ -93,18 +93,18 @@
         </select>
 
         <div id="gameArea">
-            <div id="Circle"></div>
+            <div id="circle"></div>
         </div>
 
         <audio id="clickSound" src="https://www.soundjay.com/button/beep-o7.wav"></audio>
         <audio id="gameOverSound" src="https://www.soundjay.com/button/button-10.wav"></audio>
 
         <script>
-            const circle = document.getElementById('Circle');
+            const circle = document.getElementById('circle');
             const scoreDisplay = document.getElementById('score');
             const timerDisplay = document.getElementById('timer');
             const highScoreDisplay = document.getElementById('highScore');
-            const levelDisplay = document.getElementById('Level');
+            const levelDisplay = document.getElementById('level');
             const startBtn = document.getElementById('startBtn');
             const gameArea = document.getElementById('gameArea');
             const clickSound = document.getElementById('clickSound');
@@ -112,7 +112,7 @@
 
             let score = 0;
             let timeLeft = 30;
-            let Level = 1;
+            let level = 1;
             let gameInterval;
             let timeInterval;
             let speed = 1000;
@@ -134,7 +134,7 @@
                 else if (score >= 20) level = 3;
                 else if (score >= 10) level = 2;
                 else level = 1;
-                levelDisplay.textContent = `Level: ${level}`;
+                levelDisplay.textContent = `level: ${level}`;
                 speed = 1000 - (level - 1) * 200; 
                 const size = 50 - (level - 1) * 10;
                 circle.style.width = `${size}px`;
@@ -146,10 +146,10 @@
             function startGame() {
                 score = 0;
                 timeLeft = 30;
-                Level = 1;
+                level = 1;
                 scoreDisplay.textContent = "Score: 0";
                 timerDisplay.textContent = "Time Left: 30";
-                levelDisplay.textContent = "Level: 1";
+                levelDisplay.textContent = "level: 1";
                 startBtn.disabled = true;
 
                 moveCircle();
