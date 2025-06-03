@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>click the Circle - Enhanced</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                background-color: #eef2f3;
+                text-align: center;
+                margin: 0%;
+                padding: 0%;
+            }
+            body.light {
+                background-color:#f4f4f4;
+                color: #000;
+            }
+            body.dark {
+                background-color: #111;
+                color: #fff;
+            }
+            body.dark #gameArea {
+                border-color: #acdb03;
+            }
+            body.neon {
+                background-color: #230074;
+                color: #39ff14;
+            }
+            body.neon #gameArea {
+                border-color: #00f165;
+            }
+            body.neon #Circle {
+                background-color: #ff00ff;
+                box-shadow: 0 0 10px #b80ab8,
+            }
+            h1{
+                margin-top: 20px;
+            }
+            #gameArea {
+                position: relative;
+                width: 90vw;
+                height: 60vh;
+                max-width: 400px;
+                max-height: 400px;
+                margin: 20px auto;
+                border: 2px solid #333;
+                overflow: hidden;
+                background: #fff ;
+            }
+            #Circle {
+                position: absolute;
+                width: 50px;
+                height: 50px;
+                border-radius: 50%;
+                background-color: red;
+                cursor: pointer;
+                transition: all 7.0s ease;
+            }
+            .stats {
+                font-size: 1.2em;
+                margin: 5px;
+            }
+            #startBtn {
+                padding: 10px 20px;
+                font-size: 16px;
+                background-color: #28a745;
+                color: white;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+                margin-top: 10px;
+            }
+            @media (max-width: 600px) {
+                #cicle {
+                    width: 40px;
+                    height: 40px;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <h1>click the Circle</h1>
+        <p class="stats" id="score">score: 0</p>
+        <p class="stats" id="highScore">HighScore: 0</p>
+        <p class="stats" id="timer">Time Left: 30</p>
+        <p class="stats" id="Level">Level: 1</p>
+        <button id="startBtn">Start Game</button>
+        <select  id="themeSelect">
+            <option value="neon">Neon</option>
+            <option value="dark">Dark</option>
+            <option value="light">Light</option>
+        </select>
+
+        <div id="gameArea">
+            <div id="Circle"></div>
+        </div>
+
+        <audio id="clickSound" src="https://www.soundjay.com/button/beep-o7.wav"></audio>
+        <audio id="gameOverSound" src="https://www.soundjay.com/button/button-10.wav"></audio>
+
+        <script>
+            const circle = document.getElementById('Circle');
+            const scoreDisplay = document.getElementById('score');
+            const timerDisplay = document.getElementById('timer');
+            const highScoreDisplay = document.getElementById('highScore');
+            const levelDisplay = document.getElementById('Level');
+            const startBtn = document.getElementById('startBtn');
+            const gameArea = document.getElementById('gameArea');
+            const clickSound = document.getElementById('clickSound');
+            const gameOverSound = document.getElementById('gameOverSound');
+
+            let score = 0;
+            let timeLeft = 30;
+            let Level = 1;
+            let gameInterval;
+            let timeInterval;
+            let speed = 1000;
+
+            let highScore = localStorage.getItem('highScore') || 0;
+            highScoreDisplay.textContent = `HighScore: ${highScore}`;
+
+            function moveCircle() {
+                const maxX = gameArea.clientWidth - circle.clientWidth;
+                const maxY = gameArea.clientHeight - circle.clientHeight;
+                const randomX = Math.floor(Math.random() * maxX);
+                const randomY = Math.floor(Math.random() * maxY);
+                circle.style.left = randomX + 'px';
+                circle.style.top = randomY + 'px';
+
+            }
+            function updateLevel() {
+                if (score>= 30) level= 4;
+                else if (score >= 20) level = 3;
+                else if (score >= 10) level = 2;
+                else level = 1;
+                levelDisplay.textContent = `Level: ${level}`;
+                speed = 1000 - (level - 1) * 200; 
+                const size = 50 - (level - 1) * 10;
+                circle.style.width = `${size}px`;
+                circle.style.height = `${size}px`;
+
+                clearInterval(gameInterval);
+                gameInterval = setInterval(moveCircle, speed);
+            }
+            function startGame() {
+                score = 0;
+                timeLeft = 30;
+                Level = 1;
+                scoreDisplay.textContent = "Score: 0";
+                timerDisplay.textContent = "Time Left: 30";
+                levelDisplay.textContent = "Level: 1";
+                startBtn.disabled = true;
+
+                moveCircle();
+                gameInterval = setInterval(moveCircle, speed);
+                timeInterval = setInterval(() => {
+                    timeLeft--;
+                    timerDisplay.textContent = `Time Left: ${timeLeft}`;
+                    if (timeLeft <= 0) {
+                        clearInterval(gameInterval);
+                        clearInterval(timeInterval);
+                        startBtn.disabled = false;
+                        gameOverSound.play();
+                        alert(`Time's up! You scored: ${score} points`);
+                        if (score > highScore) {
+                            localStorage.setItem('highScore', score);
+                            highScoreDisplay.textContent = `HighScore: ${score}`;
+                            alert(`New High Score: ${score}!`);
+                        }
+                    }
+                }, 1000);
+            }
+            circle.addEventListener('click', () => {
+                if (timeLeft > 0) {
+                    score++;
+                    scoreDisplay.textContent = `Score: ${score}`;
+                    clickSound.play();
+                    moveCircle();
+                    updateLevel();
+                }
+            });
+            startBtn.addEventListener('click', startGame);
+            const themeSelect = document.getElementById('themeSelect');
+            themeSelect.addEventListener('change', () => {
+                document.body.className = themeSelect.value;
+            });
+            </script>
+    </body>
+</html>
